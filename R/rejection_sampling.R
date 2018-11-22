@@ -18,7 +18,7 @@ rejection_sampling <- function(n = 1, pdf, a = 0, b = 1, C) {
   # Here I use recursion to obtain the value of a single sample.
   one_sample = function(pdf, a, b, C){
     test_draw = runif(1, a, b)
-    if (pdf(test_draw) <= C) return(test_draw)
+    if (runif(1, 0, C) <= pdf(test_draw)) return(test_draw)
     return(one_sample(pdf, a, b, C))
   }
   # Here I break the sampling process up using my previously defined function.
