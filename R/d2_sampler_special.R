@@ -13,7 +13,7 @@
 # fyx is the conditional pdf of Y given X = x.
 
 # REMEMBER TO MAKE SURE THIS WORKS WHEN IN PACAKAGE FORM.
-2d_sampler_special <- function(n = 1, fx, fyx) {
+d2_sampler_special <- function(n = 1, fx, fyx) {
   # Determine the values to be used with the rejection_sampling function.
   a = 0
   b = 0
