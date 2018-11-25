@@ -5,7 +5,7 @@
 # Description:
 # Sample from a 2D Distribution Given FX(x) and F(y|X = x)
 # This function samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
-# Its output is in the form of a vector where a sample from the marginal pdf of X is the first element.
+# Its output is in the form of a list where a sample from the marginal pdf of X is the first element.
 
 # Input variables:
 # n is the number of samples to generate.

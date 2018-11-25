@@ -16,25 +16,64 @@ knitr::opts_chunk$set(
 )
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+This package contdistpeter currently contains two functions, rejection_sampling and d2_sampler_special.
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r, include = F}
+#library(contdistpeter)
 ```
 
-## More Examples
+## Description for the rejection_sampling Function:
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+Single variable rejection sampling is the main function of this project.
+It recieves a function's pdf and generates a number of samples from the rv with the provided pdf using rejection sampling.
+It is thereby somewhat similar to functions such as rbinom, runif, etc.
 
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+Input variables:
+
+n is the number of samples to generate.
+
+pdf is the pdf of the random variable you wish to sample from.
+
+a is the lower bound of the random variable you wish to sample from.
+
+b is the upper bound of the random variable you wish to sample from.
+
+C is a numeric such that f(x) <= C for all values of x.
+
+Return variable:
+
+my_sample A vector containg the desired number of random samples from the desired distribution.
+
+## Example:
+
+```{r}
+# rejection_sampling(5, function(x)x, 0, sqrt(2), sqrt(2))
+```
+
+## Description for the d2_sampler_special Function:
+
+Sampling from a 2D distribution given FX(x) and F(y|X = x) is the additional function of this project.
+This function takes samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
+Its output is in the form of a list where a sample from the marginal pdf of X is the first element.
+
+Input variables:
+
+n is the number of samples to generate.
+
+fx is the marginal pdf of X.
+
+fyx is the conditional pdf of Y given X = x (it is in the form function(y,x) expression).
+
+Return Value:
+
+my_samples is a list of samples from the desired 2D distribution.
+
+## Example:
+
+```{r}
+# d2_sampler_special(3, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
+```
+
+```{r, fig.show='hold'}
+
 ```
