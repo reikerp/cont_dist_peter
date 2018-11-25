@@ -3,6 +3,7 @@
 # Professor Speegle
 # Project_2018
 # Description:
+# Sample from a 2D Distribution Given FX(x) and F(y|X = x)
 # This function samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
 # Its output is in the form of a vector where a sample from the marginal pdf of X is the first element.
 
@@ -10,6 +11,12 @@
 # n is the number of samples to generate.
 # fx is the marginal pdf of X.
 # fyx is the conditional pdf of Y given X = x (it is in the form function(y,x) expression).
+
+# Return Value:
+# my_samples is a list of samples from the desired 2D distribution.
+
+# Example:
+# d2_sampler_special(3, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
 
 # REMEMBER TO MAKE SURE THIS WORKS WHEN IN PACAKAGE FORM.
 d2_sampler_special <- function(n = 1, fx, fyx) {
