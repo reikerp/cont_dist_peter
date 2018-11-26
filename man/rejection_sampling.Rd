@@ -1,12 +1,14 @@
-\name{hello}
-\alias{hello}
-\title{Hello, World!}
+\name{rejection_sampling}
+\alias{rejection sampling}
+\title{Rejection Sampling:}
 \usage{
-hello()
+rejection_sampling(n, pdf, a, b, C)
 }
 \description{
-Prints 'Hello, world!'.
+This function generates a number of samples from the rv with the provided pdf using rejection sampling.
 }
 \examples{
-hello()
+rejection_sampling(10^4, function(x)1, 0, 1, 1)
+rejection_sampling(10^4, function(x)2*x, 0, 1, 2)
+rejection_sampling(10^4, function(x)exp(-x), 0, 10, 1)
 }
