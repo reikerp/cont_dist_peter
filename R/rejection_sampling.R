@@ -18,8 +18,10 @@
 # Return variable:
 # my_sample A vector containg the desired number of random samples from the desired distribution.
 
-# Example:
-# rejection_sampling(5, function(x)x, 0, sqrt(2), sqrt(2))
+# Examples:
+# rejection_sampling(10^4, function(x)1, 0, 1, 1)
+# rejection_sampling(10^4, function(x)2*x, 0, 1, 2)
+# rejection_sampling(10^4, function(x)exp(-x), 0, 10, 1)
 
 rejection_sampling <- function(n = 1, pdf, a = 0, b = 1, C) {
   # Here I use recursion to obtain the value of a single sample.
