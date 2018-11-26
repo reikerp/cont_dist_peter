@@ -1,24 +1,24 @@
-# Peter Reiker
-# 11/21/2018
-# Professor Speegle
-# Project_2018
-# Description:
-# Sample from a 2D Distribution Given FX(x) and F(y|X = x)
-# This function samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
-# Its output is in the form of a list where a sample from the marginal pdf of X is the first element.
-
-# Input variables:
-# n is the number of samples to generate.
-# fx is the marginal pdf of X.
-# fyx is the conditional pdf of Y given X = x (it is in the form function(y,x) expression).
-
-# Return Value:
-# my_samples is a list of samples from the desired 2D distribution.
-
-# Example:
-# d2_sampler_special(10, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
-# d2_sampler_special(10, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)})
-# d2_sampler_special(10, function(x) {ifelse(0 < x & x < 1, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)})
+#' @title Sample from a 2D Distribution Given FX(x) and F(y|X = x)
+#'
+#' @author Peter Reiker
+#' @date 11/26/2018
+#'
+#' @description
+#' Sample from a 2D Distribution Given FX(x) and F(y|X = x)
+#' This function samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
+#' Its output is in the form of a list where a sample from the marginal pdf of X is the first element.
+#'
+#' @param n is the number of samples to generate.
+#' @param fx is the marginal pdf of X.
+#' @param fyx is the conditional pdf of Y given X = x (it is in the form function(y,x) expression).
+#'
+#' @return my_samples is a list of samples from the desired 2D distribution.
+#' @export
+#'
+#' @examples
+#' d2_sampler_special(10, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
+#' d2_sampler_special(10, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)})
+#' d2_sampler_special(10, function(x) {ifelse(0 < x & x < 1, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)})
 
 # REMEMBER TO MAKE SURE THIS WORKS WHEN IN PACAKAGE FORM.
 d2_sampler_special <- function(n = 1, fx, fyx) {
