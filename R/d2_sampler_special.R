@@ -33,31 +33,28 @@ d2_sampler_special <- function(n = 1, fx, fyx) {
   # Now find an approximate value for C (first time).
   C = fx(optimize(fx, c(a,b), maximum = T)$maximum)
 
-  one_sample = function(){
-  # Now use rejection sampling to find a value of x.
-  x = rejection_sampling(1, fx, a, b, C)
 
-  # Repeat the same process to find a sample from the conditional pdf of Y given X = x.
-  fyx_given_x = function(y) fyx(y,x)
-
-  j = -0.01
-  k = 0.01
-
-  while(integrate(fyx_given_x, -Inf, j, stop.on.error = F)$value > 1/10^4) j = j - 0.1
-  while(integrate(fyx_given_x, k, Inf, stop.on.error = F)$value > 1/10^4) k = k + 0.1
-
-  D = fyx_given_x(optimize(fyx_given_x, c(j,k), maximum = T)$maximum)
-
-  y = rejection_sampling(1, fyx_given_x, j, k, D)
-
-  # Return the desired sample as a vector.
-  return (c(x,y))
-  }
 
   my_samples = list()
   # Here I break up the sampling process using my previously defined function.
   for (i in 1:n) {
-    my_samples[[i]] = one_sample()
+      # Now use rejection sampling to find a value of x.
+      x = rejection_sampling(1, fx, a, b, C)
+
+      # Repeat the same process to find a sample from the conditional pdf of Y given X = x.
+      fyx_given_x = function(y) fyx(y,x)
+
+      j = -0.01
+      k = 0.01
+
+      while(integrate(fyx_given_x, -Inf, j, stop.on.error = F)$value > 1/10^4) j = j - 0.1
+      while(integrate(fyx_given_x, k, Inf, stop.on.error = F)$value > 1/10^4) k = k + 0.1
+
+      D = fyx_given_x(optimize(fyx_given_x, c(j,k), maximum = T)$maximum)
+
+      y = rejection_sampling(1, fyx_given_x, j, k, D)
+
+    my_samples[[i]] = c(x,y)
   }
 
   my_samplesx = my_samples[[1]][1]
