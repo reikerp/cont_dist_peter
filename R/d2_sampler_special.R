@@ -18,15 +18,15 @@
 #' @examples
 #' d2_sampler_special(10^4, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
 #' d2_sampler_special(10^4, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)})
-#' d2_sampler_special(10^4, function(x) {ifelse(0 < x & x < 1, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)})
+#' d2_sampler_special(10^4, function(x) {ifelse(0.01 < x & x < 1.01, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)})
 
 d2_sampler_special <- function(n = 1, fx, fyx) {
   # Determine the values to be used with the rejection_sampling function (first time).
-  a = -1
-  b = 1
+  a = -0.01
+  b = 0.01
 
-  while(integrate(fx, -Inf, a)$value > 1/10^4) a = a - 1
-  while(integrate(fx, b, Inf)$value > 1/10^4) b = b + 1
+  while(integrate(fx, -Inf, a, stop.on.error = F)$value > 1/10^4) a = a - 0.1
+  while(integrate(fx, b, Inf, stop.on.error = F)$value > 1/10^4) b = b + 0.1
 
   # Now find an approximate value for C (first time).
   C = fx(optimize(fx, c(a,b), maximum = T)$maximum)
@@ -38,11 +38,11 @@ d2_sampler_special <- function(n = 1, fx, fyx) {
   # Repeat the same process to find a sample from the conditional pdf of Y given X = x.
   fyx_given_x = function(y) fyx(y,x)
 
-  j = -1
-  k = 1
+  j = -0.01
+  k = 0.01
 
-  while(integrate(fyx_given_x, -Inf, j)$value > 1/10^4) j = j - 1
-  while(integrate(fyx_given_x, k, Inf)$value > 1/10^4) k = k + 1
+  while(integrate(fyx_given_x, -Inf, j, stop.on.error = F)$value > 1/10^4) j = j - 0.1
+  while(integrate(fyx_given_x, k, Inf, stop.on.error = F)$value > 1/10^4) k = k + 0.1
 
   D = fyx_given_x(optimize(fyx_given_x, c(j,k), maximum = T)$maximum)
 
