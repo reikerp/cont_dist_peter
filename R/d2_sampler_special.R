@@ -8,6 +8,8 @@
 #' This function samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
 #' Its output is in the form of a data frame where the elements are x and y samples from the specified 2D distribution.
 #'
+#' This function uses the rejection_sampling function.
+#'
 #' @param n is the number of samples to generate.
 #' @param fx is the marginal pdf of X.
 #' @param fyx is the conditional pdf of Y given X = x (it is in the form function(y,x) expression).
@@ -16,9 +18,9 @@
 #' @export
 #'
 #' @examples
-#' d2_sampler_special(10^4, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
-#' d2_sampler_special(10^4, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)})
-#' d2_sampler_special(10^4, function(x) {ifelse(0.01 < x & x < 1.01, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)})
+#' d2_sampler_special(2*10^3, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
+#' d2_sampler_special(2*10^3, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)})
+#' d2_sampler_special(2*10^3, function(x) {ifelse(0.01 < x & x < 1.01, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)})
 
 d2_sampler_special <- function(n = 1, fx, fyx) {
   # Determine the values to be used with the rejection_sampling function (first time).
@@ -31,7 +33,7 @@ d2_sampler_special <- function(n = 1, fx, fyx) {
   # Now find an approximate value for C (first time).
   C = fx(optimize(fx, c(a,b), maximum = T)$maximum)
 
-  one_sample = function(fx, fyx, a, b, C){
+  one_sample = function(){
   # Now use rejection sampling to find a value of x.
   x = rejection_sampling(1, fx, a, b, C)
 
@@ -55,16 +57,20 @@ d2_sampler_special <- function(n = 1, fx, fyx) {
   my_samples = list()
   # Here I break up the sampling process using my previously defined function.
   for (i in 1:n) {
-    my_samples[[i]] = one_sample(fx, fyx, a, b, C)
+    my_samples[[i]] = one_sample()
   }
 
-  for (i in 1:n){
-    if (i == 1) my_samplesx = my_samples[[i]][1]
-    if (i != 1) my_samplesx = c(my_samplesx, my_samples[[i]][1])
-    if (i == 1) my_samplesy = my_samples[[i]][2]
-    if (i != 1) my_samplesy = c(my_samplesy, my_samples[[i]][2])
-    if (i == n) my_samples = data.frame(x = my_samplesx, y = my_samplesy)
+  my_samplesx = my_samples[[1]][1]
+  my_samplesy = my_samples[[1]][2]
+
+  if (n > 1) {
+    for (i in 2:n){
+    my_samplesx = c(my_samplesx, my_samples[[i]][1])
+    my_samplesy = c(my_samplesy, my_samples[[i]][2])
+    }
   }
+
+  my_samples = data.frame(x = my_samplesx, y = my_samplesy)
 
   return(my_samples)
 }
