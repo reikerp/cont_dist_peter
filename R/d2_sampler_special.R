@@ -33,10 +33,10 @@ d2_sampler_special <- function(n = 1, fx, fyx) {
   # Now find an approximate value for C (first time).
   C = fx(optimize(fx, c(a,b), maximum = T)$maximum)
 
+  # Here I initialize these vectors to all 0s to save runtime.
+  my_samplesx = replicate(n,0)
+  my_samplesy = replicate(n,0)
 
-
-  my_samples = list()
-  # Here I break up the sampling process using my previously defined function.
   for (i in 1:n) {
       # Now use rejection sampling to find a value of x.
       x = rejection_sampling(1, fx, a, b, C)
@@ -54,17 +54,8 @@ d2_sampler_special <- function(n = 1, fx, fyx) {
 
       y = rejection_sampling(1, fyx_given_x, j, k, D)
 
-    my_samples[[i]] = c(x,y)
-  }
-
-  my_samplesx = my_samples[[1]][1]
-  my_samplesy = my_samples[[1]][2]
-
-  if (n > 1) {
-    for (i in 2:n){
-    my_samplesx = c(my_samplesx, my_samples[[i]][1])
-    my_samplesy = c(my_samplesy, my_samples[[i]][2])
-    }
+    my_samplesx[i] = x
+    my_samplesy[i] = y
   }
 
   my_samples = data.frame(x = my_samplesx, y = my_samplesy)
