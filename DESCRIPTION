@@ -1,12 +1,12 @@
 Package: contdistpeter
 Type: Package
 Title: Peter's Continuous Distribution Package
-Version: 0.1.0
+Version: 0.1.1
 Author: Peter Reiker
 Maintainer: Peter Reiker <peter.reiker@slu.edu>
 Description: This package contdistpeter currently contains two functions, rejection_sampling and d2_sampler_special.
-rejection_sampling recieves a function's pdf and generates a number of samples from the rv with the provided pdf using rejection sampling.
-d2_sampler_special samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
+    rejection_sampling recieves a function's pdf and generates a number of samples from the rv with the provided pdf using rejection sampling.
+    d2_sampler_special samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
 License: NA
 Encoding: UTF-8
 LazyData: true
