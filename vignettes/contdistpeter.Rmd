@@ -1,7 +1,7 @@
 ---
 title: "contdistpeter"
 author: "Peter Reiker"
-date: "11/26/2018"
+date: "11/27/2018"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -129,7 +129,7 @@ my_samples is a data frame of x and y samples from the desired 2D distribution.
 ## Examples:
 
 ```{r, fig.show='hold'}
-plot(d2_sampler_special(2*10^3, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)}))
-plot(d2_sampler_special(2*10^3, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)}))
-plot(d2_sampler_special(2*10^3, function(x) {ifelse(0.01 < x & x < 1.01, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)}))
+plot(d2_sampler_special(10^3, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)}))
+plot(d2_sampler_special(10^3, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)}))
+plot(d2_sampler_special(10^3, function(x) {ifelse(0.01 < x & x < 1.01, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)}))
 ```
