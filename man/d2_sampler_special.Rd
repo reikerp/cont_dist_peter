@@ -14,17 +14,20 @@ d2_sampler_special(n = 1, fx, fyx)
 \item{fyx}{is the conditional pdf of Y given X = x (it is in the form function(y,x) expression).}
 }
 \value{
-my_samples is a list of samples from the desired 2D distribution.
+my_samples is a data frame of x and y samples from the desired 2D distribution.
 }
 \description{
 Sample from a 2D Distribution Given FX(x) and F(y|X = x)
 This function samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
-Its output is in the form of a list where a sample from the marginal pdf of X is the first element.
+Its output is in the form of a data frame where the elements are x and y samples from the specified 2D distribution.
+
+This function uses the rejection_sampling function.
+Depending upon the sample size and complexity of the distribution, this function may run more than 1 minute.
 }
 \examples{
-d2_sampler_special(10, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
-d2_sampler_special(10, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)})
-d2_sampler_special(10, function(x) {ifelse(0 < x & x < 1, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)})
+d2_sampler_special(2*10^3, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
+d2_sampler_special(2*10^3, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)})
+d2_sampler_special(2*10^3, function(x) {ifelse(0.01 < x & x < 1.01, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)})
 }
 \author{
 Peter Reiker

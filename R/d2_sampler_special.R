@@ -37,7 +37,7 @@ d2_sampler_special <- function(n = 1, fx, fyx) {
   # Now use rejection sampling to find a vector of sample values of x.
   my_samplesx = rejection_sampling(n, fx, a, b, C)
 
-  # Here I initialize this vectors to all 0s to save runtime.
+  # Here I initialize this vector to all 0s to save runtime.
   my_samplesy = replicate(n,0)
 
   for (i in 1:n) {

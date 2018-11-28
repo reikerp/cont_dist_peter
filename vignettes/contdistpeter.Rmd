@@ -35,41 +35,40 @@ rejection_sampling <- function(n = 1, pdf, a = 0, b = 1, C) {
 }
 d2_sampler_special <- function(n = 1, fx, fyx) {
   # Determine the values to be used with the rejection_sampling function (first time).
-  a = 0
-  b = 0
+  a = -0.01
+  b = 0.01
 
-  while(integrate(fx, -Inf, a)$value > 1/10^4) a = a - 1
-  while(integrate(fx, b, Inf)$value > 1/10^4) b = b + 1
+  while(integrate(fx, -Inf, a, stop.on.error = F)$value > 1/10^4) a = a - 0.1
+  while(integrate(fx, b, Inf, stop.on.error = F)$value > 1/10^4) b = b + 0.1
 
   # Now find an approximate value for C (first time).
-  C = optimize(fx, c(a,b), maximum = T)
+  C = fx(optimize(fx, c(a,b), maximum = T)$maximum)
 
-  one_sample = function(fx, fyx, a, b, C){
-  # Now use rejection sampling to find a value of x.
-  x = rejection_sampling(1, fx, a, b, C$maximum)
+  # Now use rejection sampling to find a vector of sample values of x.
+  my_samplesx = rejection_sampling(n, fx, a, b, C)
 
-  # Repeat the same process to find a sample from the conditional pdf of Y given X = x.
-  fyx_given_x = function(y) fyx(y,x)
+  # Here I initialize this vector to all 0s to save runtime.
+  my_samplesy = replicate(n,0)
 
-  j = 0
-  k = 0
-
-  while(integrate(fyx_given_x, -Inf, j)$value > 1/10^4) j = j - 1
-  while(integrate(fyx_given_x, k, Inf)$value > 1/10^4) k = k + 1
-
-  D = optimize(fyx_given_x, c(j,k), maximum = T)
-
-  y = rejection_sampling(1, fyx_given_x, j, k, D$maximum)
-
-  # Return the desired sample as a vector.
-  return (c(x,y))
-  }
-
-  my_samples = list()
-  # Here I break up the sampling process using my previously defined function.
   for (i in 1:n) {
-    my_samples[[i]] = one_sample(fx, fyx, a, b, C)
+      # Repeat the same process to find a sample from the conditional pdf of Y given X = x.
+      fyx_given_x = function(y) fyx(y,my_samplesx[i])
+
+      j = -0.01
+      k = 0.01
+
+      while(integrate(fyx_given_x, -Inf, j, stop.on.error = F)$value > 1/10^4) j = j - 0.1
+      while(integrate(fyx_given_x, k, Inf, stop.on.error = F)$value > 1/10^4) k = k + 0.1
+
+      D = fyx_given_x(optimize(fyx_given_x, c(j,k), maximum = T)$maximum)
+
+      y = rejection_sampling(1, fyx_given_x, j, k, D)
+
+    my_samplesy[i] = y
   }
+
+  my_samples = data.frame(x = my_samplesx, y = my_samplesy)
+
   return(my_samples)
 }
 ```
@@ -109,9 +108,11 @@ hist(sample3)
 
 ## Description for the d2_sampler_special Function:
 
-Sampling from a 2D distribution given FX(x) and F(y|X = x) is the additional function of this project.
-This function takes samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
-Its output is in the form of a list where a sample from the marginal pdf of X is the first element.
+This function samples from a 2D distribution given the marginal pdf of X and the conditional pdf of Y given X = x.
+Its output is in the form of a data frame where the elements are x and y samples from the specified 2D distribution.
+
+This function uses the rejection_sampling function.
+Depending upon the sample size and complexity of the distribution, this function may run more than 1 minute.
 
 Input variables:
 
@@ -123,12 +124,12 @@ fyx is the conditional pdf of Y given X = x (it is in the form function(y,x) exp
 
 Return Value:
 
-my_samples is a list of samples from the desired 2D distribution.
+my_samples is a data frame of x and y samples from the desired 2D distribution.
 
 ## Examples:
 
-```{r}
-d2_sampler_special(3, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)})
-d2_sampler_special(3, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)})
-d2_sampler_special(3, function(x) {ifelse(0 < x & x < 1, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)})
+```{r, fig.show='hold'}
+plot(d2_sampler_special(2*10^3, function(x) {exp(-x^2/2)/sqrt(2*pi)}, function(y,x){exp(-y^2/2)/sqrt(2*pi)}))
+plot(d2_sampler_special(2*10^3, function(x) {ifelse(x > 0, exp(-x), 0)}, function(y,x){ifelse(0 < y & y < x, 1/x, 0)}))
+plot(d2_sampler_special(2*10^3, function(x) {ifelse(0.01 < x & x < 1.01, 1, 0)}, function(y,x){ifelse(0 < y, x*exp(-y*x), 0)}))
 ```
