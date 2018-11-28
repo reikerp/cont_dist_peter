@@ -9,6 +9,7 @@
 #' Its output is in the form of a data frame where the elements are x and y samples from the specified 2D distribution.
 #'
 #' This function uses the rejection_sampling function.
+#' Depending upon the sample size and complexity of the distribution, this function may run more than 1 minute.
 #'
 #' @param n is the number of samples to generate.
 #' @param fx is the marginal pdf of X.
@@ -33,16 +34,15 @@ d2_sampler_special <- function(n = 1, fx, fyx) {
   # Now find an approximate value for C (first time).
   C = fx(optimize(fx, c(a,b), maximum = T)$maximum)
 
-  # Here I initialize these vectors to all 0s to save runtime.
-  my_samplesx = replicate(n,0)
+  # Now use rejection sampling to find a vector of sample values of x.
+  my_samplesx = rejection_sampling(n, fx, a, b, C)
+
+  # Here I initialize this vectors to all 0s to save runtime.
   my_samplesy = replicate(n,0)
 
   for (i in 1:n) {
-      # Now use rejection sampling to find a value of x.
-      x = rejection_sampling(1, fx, a, b, C)
-
       # Repeat the same process to find a sample from the conditional pdf of Y given X = x.
-      fyx_given_x = function(y) fyx(y,x)
+      fyx_given_x = function(y) fyx(y,my_samplesx[i])
 
       j = -0.01
       k = 0.01
@@ -54,7 +54,6 @@ d2_sampler_special <- function(n = 1, fx, fyx) {
 
       y = rejection_sampling(1, fyx_given_x, j, k, D)
 
-    my_samplesx[i] = x
     my_samplesy[i] = y
   }
 
